@@ -20,9 +20,12 @@ gitops/
 ├── charts/                       # Shared Helm charts
 │   ├── rideshare-service/        # Shared Helm chart for microservices
 │   ├── rabbitmq/                 # StatefulSet Helm chart
-│   └── jaeger/                   # Deployment Helm chart
+│   ├── jaeger/                   # Deployment Helm chart
+│   └── namespaces/               # Declarative namespaces Helm chart
 │
 ├── applications/                 # ArgoCD Application CRDs split by domain
+│   ├── system/
+│   │   └── namespaces.yaml       # ← Declarative namespace management!
 │   ├── platform-services/
 │   │   └── rabbitmq.yaml
 │   ├── observability/
