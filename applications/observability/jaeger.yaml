@@ -11,7 +11,7 @@ spec:
     path: charts/jaeger
     helm:
       valueFiles:
-        - clusters/development/values/observability/jaeger.yaml
+        - ../../clusters/development/values/observability/jaeger.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: observability

@@ -11,7 +11,7 @@ spec:
     path: charts/rideshare-service
     helm:
       valueFiles:
-        - clusters/development/values/applications/payment-service.yaml
+        - ../../clusters/development/values/applications/payment-service.yaml
   destination:
     server: https://kubernetes.default.svc
     namespace: rideshare
