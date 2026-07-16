@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rideshare
+  namespace: argocd
+spec:
+  description: Project for RideShare microservices platform
+  sourceRepos:
+    - '*'
+  destinations:
+    - namespace: rideshare-dev
+      server: https://kubernetes.default.svc
+    - namespace: platform-dev
+      server: https://kubernetes.default.svc
+    - namespace: observability-dev
+      server: https://kubernetes.default.svc
+    - namespace: rideshare-prod
+      server: https://kubernetes.default.svc
+    - namespace: platform-prod
+      server: https://kubernetes.default.svc
+    - namespace: observability-prod
+      server: https://kubernetes.default.svc
+  # Permit all cluster-scoped and namespace-scoped resources
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

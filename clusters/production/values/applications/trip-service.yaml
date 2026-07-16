@@ -1,0 +1,30 @@
+replicaCount: 2
+
+image:
+  repository: europe-west1-docker.pkg.dev/{{PROJECT_ID}}/ride-sharing/trip-service
+  tag: "1.0.0+f8b21e4"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9093
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+env:
+  - name: MONGODB_URI
+    valueFrom:
+      secretKeyRef:
+        name: mongodb
+        key: uri
+  - name: RABBITMQ_URI
+    valueFrom:
+      secretKeyRef:
+        name: rabbitmq-credentials
+        key: uri

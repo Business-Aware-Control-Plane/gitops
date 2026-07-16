@@ -1,0 +1,44 @@
+replicaCount: 2
+
+image:
+  repository: europe-west1-docker.pkg.dev/{{PROJECT_ID}}/ride-sharing/web
+  tag: "1.0.0+f8b21e4"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 3000
+
+resources:
+  requests:
+    cpu: 200m
+    memory: 512Mi
+  limits:
+    cpu: 1000m
+    memory: 1Gi
+
+env:
+  - name: NODE_ENV
+    value: "production"
+  - name: NEXT_PUBLIC_API_URL
+    value: "https://api.{{DOMAIN}}"
+  - name: NEXT_PUBLIC_WEBSOCKET_URL
+    value: "wss://api.{{DOMAIN}}/ws"
+
+livenessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 60
+  periodSeconds: 20
+  timeoutSeconds: 10
+  failureThreshold: 3
+
+readinessProbe:
+  httpGet:
+    path: /
+    port: http
+  initialDelaySeconds: 30
+  periodSeconds: 10
+  timeoutSeconds: 10
+  failureThreshold: 3

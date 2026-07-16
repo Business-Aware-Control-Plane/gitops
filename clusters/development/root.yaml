@@ -1,0 +1,172 @@
+apiVersion: v1
+kind: List
+items:
+  # ============================================================
+  # Platform Layer
+  # ============================================================
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-rabbitmq
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rabbitmq
+        helm:
+          valueFiles:
+            - clusters/development/values/platform/rabbitmq.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: platform-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  # ============================================================
+  # Observability Layer
+  # ============================================================
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-jaeger
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/jaeger
+        helm:
+          valueFiles:
+            - clusters/development/values/observability/jaeger.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: observability-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  # ============================================================
+  # Application Layer (All utilizing the shared rideshare-service chart)
+  # ============================================================
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-api-gateway
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/development/values/applications/api-gateway.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-trip-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/development/values/applications/trip-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-driver-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/development/values/applications/driver-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-payment-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/development/values/applications/payment-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: dev-web
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/development/values/applications/web.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-dev
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true

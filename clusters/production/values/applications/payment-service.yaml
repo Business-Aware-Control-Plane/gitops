@@ -1,0 +1,44 @@
+replicaCount: 2
+
+image:
+  repository: europe-west1-docker.pkg.dev/{{PROJECT_ID}}/ride-sharing/payment-service
+  tag: "1.0.0+f8b21e4"
+  pullPolicy: Always
+
+service:
+  type: ClusterIP
+  port: 9004
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+config:
+  STRIPE_SUCCESS_URL: "https://{{DOMAIN}}?payment=success"
+  STRIPE_CANCEL_URL: "https://{{DOMAIN}}?payment=cancel"
+
+env:
+  - name: STRIPE_SUCCESS_URL
+    valueFrom:
+      configMapKeyRef:
+        name: payment-service-config
+        key: STRIPE_SUCCESS_URL
+  - name: STRIPE_CANCEL_URL
+    valueFrom:
+      configMapKeyRef:
+        name: payment-service-config
+        key: STRIPE_CANCEL_URL
+  - name: STRIPE_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: stripe-secrets
+        key: stripe-secret-key
+  - name: RABBITMQ_URI
+    valueFrom:
+      secretKeyRef:
+        name: rabbitmq-credentials
+        key: uri

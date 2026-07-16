@@ -1,0 +1,50 @@
+replicaCount: 1
+
+image:
+  repository: ride-sharing/payment-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9004
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+config:
+  JAEGER_ENDPOINT: "http://jaeger.observability-dev.svc.cluster.local:4318/v1/traces"
+  STRIPE_SUCCESS_URL: "http://localhost:3000?payment=success"
+  STRIPE_CANCEL_URL: "http://localhost:3000?payment=cancel"
+
+env:
+  - name: JAEGER_ENDPOINT
+    valueFrom:
+      configMapKeyRef:
+        name: payment-service-config
+        key: JAEGER_ENDPOINT
+  - name: STRIPE_SUCCESS_URL
+    valueFrom:
+      configMapKeyRef:
+        name: payment-service-config
+        key: STRIPE_SUCCESS_URL
+  - name: STRIPE_CANCEL_URL
+    valueFrom:
+      configMapKeyRef:
+        name: payment-service-config
+        key: STRIPE_CANCEL_URL
+  - name: STRIPE_SECRET_KEY
+    valueFrom:
+      secretKeyRef:
+        name: stripe-secrets
+        key: stripe-secret-key
+  - name: RABBITMQ_URI
+    valueFrom:
+      secretKeyRef:
+        name: rabbitmq-credentials
+        key: uri

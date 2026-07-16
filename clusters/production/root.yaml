@@ -1,0 +1,146 @@
+apiVersion: v1
+kind: List
+items:
+  # ============================================================
+  # Platform Layer
+  # ============================================================
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-rabbitmq
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rabbitmq
+        helm:
+          valueFiles:
+            - clusters/production/values/platform/rabbitmq.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: platform-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  # ============================================================
+  # Application Layer (All utilizing the shared rideshare-service chart)
+  # ============================================================
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-api-gateway
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/production/values/applications/api-gateway.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-trip-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/production/values/applications/trip-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-driver-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/production/values/applications/driver-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-payment-service
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/production/values/applications/payment-service.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true
+
+  - apiVersion: argoproj.io/v1alpha1
+    kind: Application
+    metadata:
+      name: prod-web
+      namespace: argocd
+    spec:
+      project: rideshare
+      source:
+        repoURL: '{{REPO_URL}}'
+        targetRevision: HEAD
+        path: charts/rideshare-service
+        helm:
+          valueFiles:
+            - clusters/production/values/applications/web.yaml
+      destination:
+        server: https://kubernetes.default.svc
+        namespace: rideshare-prod
+      syncPolicy:
+        automated:
+          prune: true
+          selfHeal: true
+        createNamespace: true

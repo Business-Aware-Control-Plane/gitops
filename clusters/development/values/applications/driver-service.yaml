@@ -1,0 +1,33 @@
+replicaCount: 1
+
+image:
+  repository: ride-sharing/driver-service
+  tag: latest
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 9092
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
+
+config:
+  JAEGER_ENDPOINT: "http://jaeger.observability-dev.svc.cluster.local:4318/v1/traces"
+
+env:
+  - name: RABBITMQ_URI
+    valueFrom:
+      secretKeyRef:
+        name: rabbitmq-credentials
+        key: uri
+  - name: JAEGER_ENDPOINT
+    valueFrom:
+      configMapKeyRef:
+        name: driver-service-config
+        key: JAEGER_ENDPOINT

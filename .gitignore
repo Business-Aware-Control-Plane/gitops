@@ -1,0 +1,17 @@
+# IDEs and editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# System Files
+.DS_Store
+Thumbs.db
+
+# Helm/Kubernetes temporary files
+*.tmp
+*.bak
+.kube/
+kubeconfig
+
+/.vscode

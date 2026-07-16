@@ -1,0 +1,19 @@
+replicaCount: 1
+
+image:
+  repository: rabbitmq
+  tag: 3-management
+
+resources:
+  requests:
+    cpu: 250m
+    memory: 512Mi
+  limits:
+    cpu: 500m
+    memory: 512Mi
+
+secrets:
+  credentialsSecretName: rabbitmq-credentials
+
+storage:
+  size: 512Mi
