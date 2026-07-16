@@ -1,5 +1,9 @@
 # IDEs and editors
 .idea/
+# Local development secrets (Never commit to Git!)
+secrets/
+.env
+.env.local
 .vscode/
 *.swp
 *.swo

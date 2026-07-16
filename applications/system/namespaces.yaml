@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: namespaces
+  namespace: argocd
+spec:
+  project: rideshare
+  source:
+    repoURL: 'https://github.com/Business-Aware-Control-Plane/gitops.git'
+    targetRevision: HEAD
+    path: charts/namespaces
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

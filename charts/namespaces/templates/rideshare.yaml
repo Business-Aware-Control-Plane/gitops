@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: rideshare
+  labels:
+    name: rideshare
+    app.kubernetes.io/managed-by: Helm
+    gitops.domain: business-services
