@@ -18,7 +18,7 @@ resources:
     memory: 128Mi
 
 config:
-  JAEGER_ENDPOINT: "http://jaeger.observability-dev.svc.cluster.local:4318/v1/traces"
+  JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
 
 env:
   - name: MONGODB_URI

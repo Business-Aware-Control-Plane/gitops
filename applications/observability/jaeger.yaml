@@ -1,20 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-root
+  name: jaeger
   namespace: argocd
 spec:
   project: rideshare
   source:
     repoURL: 'https://github.com/Business-Aware-Control-Plane/gitops.git'
     targetRevision: HEAD
-    path: applications
-    directory:
-      recurse: true
+    path: charts/jaeger
+    helm:
+      valueFiles:
+        - clusters/development/values/observability/jaeger.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: observability
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    createNamespace: true

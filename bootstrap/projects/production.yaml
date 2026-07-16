@@ -1,0 +1,25 @@
+apiVersion: argoproj.io/v1alpha1
+kind: AppProject
+metadata:
+  name: rideshare
+  namespace: argocd
+spec:
+  description: Project for RideShare Production Cluster
+  sourceRepos:
+    - 'https://github.com/Business-Aware-Control-Plane/gitops.git'
+    - '*'
+  destinations:
+    - namespace: rideshare
+      server: https://kubernetes.default.svc
+    - namespace: platform
+      server: https://kubernetes.default.svc
+    - namespace: observability
+      server: https://kubernetes.default.svc
+    - namespace: argocd
+      server: https://kubernetes.default.svc
+  clusterResourceWhitelist:
+    - group: '*'
+      kind: '*'
+  namespaceResourceWhitelist:
+    - group: '*'
+      kind: '*'

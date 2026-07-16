@@ -1,20 +1,22 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: dev-root
+  name: api-gateway
   namespace: argocd
 spec:
   project: rideshare
   source:
     repoURL: 'https://github.com/Business-Aware-Control-Plane/gitops.git'
     targetRevision: HEAD
-    path: applications
-    directory:
-      recurse: true
+    path: charts/rideshare-service
+    helm:
+      valueFiles:
+        - clusters/development/values/applications/api-gateway.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: argocd
+    namespace: rideshare
   syncPolicy:
     automated:
       prune: true
       selfHeal: true
+    createNamespace: true
