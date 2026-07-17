@@ -15,9 +15,8 @@ cluster:
       pg_stat_statements.max: "10000"
       
   # Bootstrap database settings
-  bootstrap:
-    initdb:
-      database: rideshare
-      owner: rideshare_user
-      secret:
-        name: postgres-credentials
+initdb:
+    database: rideshare
+    owner: rideshare_user
+    secret:
+      name: postgres-credentials
