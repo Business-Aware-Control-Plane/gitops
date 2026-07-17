@@ -1,0 +1,24 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: postgres-cluster
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: rideshare
+  source:
+    repoURL: 'https://github.com/Business-Aware-Control-Plane/gitops.git'
+    targetRevision: HEAD
+    path: charts/postgres-cluster
+    helm:
+      valueFiles:
+        - ../../clusters/development/values/platform/postgres-cluster.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    createNamespace: true

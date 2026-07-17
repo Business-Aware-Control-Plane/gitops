@@ -1,0 +1,9 @@
+apiVersion: v2
+name: postgres-cluster
+description: A wrapper chart for installing a PostgreSQL cluster using CloudNativePG
+type: application
+version: 1.0.0
+dependencies:
+  - name: cluster
+    version: 0.2.0
+    repository: https://cloudnative-pg.github.io/charts
