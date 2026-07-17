@@ -16,7 +16,7 @@ spec:
         - ../../clusters/development/values/platform/cloudnative-pg-operator.yaml
   destination:
     server: https://kubernetes.default.svc
-    namespace: cnpg-system
+    namespace: platform
   syncPolicy:
     automated:
       prune: true
