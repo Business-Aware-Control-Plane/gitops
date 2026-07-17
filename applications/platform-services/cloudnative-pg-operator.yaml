@@ -8,12 +8,14 @@ metadata:
 spec:
   project: rideshare
   source:
-    repoURL: 'https://github.com/Business-Aware-Control-Plane/gitops.git'
-    targetRevision: HEAD
-    path: charts/cloudnative-pg
+    repoURL: 'https://cloudnative-pg.github.io/charts'
+    chart: cloudnative-pg
+    targetRevision: 0.29.0
     helm:
-      valueFiles:
-        - ../../clusters/development/values/platform/cloudnative-pg-operator.yaml
+      values: |
+        monitoring:
+          podMonitor:
+            enabled: false
   destination:
     server: https://kubernetes.default.svc
     namespace: platform
@@ -21,4 +23,6 @@ spec:
     automated:
       prune: true
       selfHeal: true
-    createNamespace: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true

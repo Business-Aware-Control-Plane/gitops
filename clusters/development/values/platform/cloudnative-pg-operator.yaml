@@ -1,5 +1,0 @@
-# Value overrides for CNPG operator in development
-cloudnative-pg:
-  monitoring:
-    podMonitor:
-      enabled: false

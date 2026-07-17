@@ -1,9 +1,0 @@
-apiVersion: v2
-name: cloudnative-pg
-description: A wrapper chart for installing the CloudNativePG operator
-type: application
-version: 1.0.0
-dependencies:
-  - name: cloudnative-pg
-    version: 0.29.0
-    repository: https://cloudnative-pg.github.io/charts
