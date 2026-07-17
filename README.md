@@ -108,9 +108,9 @@ kubectl create secret generic stripe-secrets \
   --from-literal=stripe-webhook-key="whsec_..." \
   -n rideshare
 
-# MongoDB Connection String (Atlas/External URI)
-kubectl create secret generic mongodb \
-  --from-literal=uri="mongodb+srv://..." \
+# Postgres Connection Secret (for CNPG client)
+kubectl create secret generic postgres-cluster-app \
+  --from-literal=uri="postgresql://app:JSoGtyl5xQiUDvYNs6Mo67lUcmlq2J97f4XVqxHXKyrPYRObvYCqa2SEb5hstSlW@postgres-cluster-rw.platform.svc.cluster.local:5432/app?sslmode=disable" \
   -n rideshare
 ```
 

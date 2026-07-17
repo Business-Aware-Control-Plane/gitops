@@ -18,10 +18,10 @@ resources:
     memory: 256Mi
 
 env:
-  - name: MONGODB_URI
+  - name: POSTGRES_URI
     valueFrom:
       secretKeyRef:
-        name: mongodb
+        name: postgres-cluster-app
         key: uri
   - name: RABBITMQ_URI
     valueFrom:
