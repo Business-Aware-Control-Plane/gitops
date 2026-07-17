@@ -1,0 +1,29 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx-ingress
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "1"
+spec:
+  project: rideshare
+  source:
+    repoURL: 'https://helm.nginx.com/stable'
+    chart: nginx-ingress
+    targetRevision: 1.2.0
+    helm:
+      values: |
+        controller:
+          ingressClass:
+            name: nginx
+          service:
+            type: ClusterIP
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: ingress-nginx
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

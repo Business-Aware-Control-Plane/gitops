@@ -21,9 +21,9 @@ env:
   - name: NODE_ENV
     value: "development"
   - name: NEXT_PUBLIC_API_URL
-    value: "http://api-gateway:8081"
+    value: "http://api-gateway.rideshare:8080"
   - name: NEXT_PUBLIC_WEBSOCKET_URL
-    value: "ws://api-gateway:8081/ws"
+    value: "ws://api-gateway.rideshare:8080/ws"
 
 livenessProbe:
   httpGet:
@@ -42,3 +42,11 @@ readinessProbe:
   periodSeconds: 10
   timeoutSeconds: 10
   failureThreshold: 3
+
+ingress:
+  className: nginx
+  hosts:
+    - host: web.rideshare
+      paths:
+        - path: /
+          pathType: Prefix

@@ -42,3 +42,16 @@ env:
       secretKeyRef:
         name: stripe-secrets
         key: stripe-webhook-key
+
+ingress:
+  className: nginx
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "3600"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
+    nginx.org/proxy-read-timeout: "3600s"
+    nginx.org/proxy-send-timeout: "3600s"
+  hosts:
+    - host: api-gateway.rideshare
+      paths:
+        - path: /
+          pathType: Prefix
