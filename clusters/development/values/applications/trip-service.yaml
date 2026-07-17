@@ -21,10 +21,10 @@ config:
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
 
 env:
-  - name: MONGODB_URI
+  - name: POSTGRES_URI
     valueFrom:
       secretKeyRef:
-        name: mongodb
+        name: postgres-cluster-app
         key: uri
   - name: RABBITMQ_URI
     valueFrom:
