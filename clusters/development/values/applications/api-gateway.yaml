@@ -50,6 +50,7 @@ ingress:
     nginx.ingress.kubernetes.io/proxy-send-timeout: "3600"
     nginx.org/proxy-read-timeout: "3600s"
     nginx.org/proxy-send-timeout: "3600s"
+    nginx.org/websocket-services: "api-gateway"
   hosts:
     - host: api-gateway.rideshare
       paths:
