@@ -19,6 +19,7 @@ resources:
 
 config:
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
+  REDIS_ADDR: "redis.platform.svc.cluster.local:6379"
 
 env:
   - name: RABBITMQ_URI
@@ -31,3 +32,8 @@ env:
       configMapKeyRef:
         name: driver-service-config
         key: JAEGER_ENDPOINT
+  - name: REDIS_ADDR
+    valueFrom:
+      configMapKeyRef:
+        name: driver-service-config
+        key: REDIS_ADDR

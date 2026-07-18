@@ -1,0 +1,23 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: redis
+  namespace: argocd
+spec:
+  project: rideshare
+  source:
+    repoURL: "https://github.com/Business-Aware-Control-Plane/gitops.git"
+    targetRevision: HEAD
+    path: charts/redis
+    helm:
+      valueFiles:
+        - ../../clusters/development/values/platform/redis.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: platform
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true

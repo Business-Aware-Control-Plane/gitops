@@ -1,0 +1,13 @@
+replicaCount: 1
+
+image:
+  repository: redis
+  tag: 7-alpine
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 64Mi
+  limits:
+    cpu: 200m
+    memory: 128Mi
