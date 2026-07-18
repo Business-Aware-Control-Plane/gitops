@@ -2,21 +2,21 @@
 cluster:
   name: postgres-db
   instances: 3
-  
+
   # Storage configurations
   storage:
     size: 1Gi
     storageClass: standard
-  
+
   # PostgreSQL configs
   postgresql:
     parameters:
       shared_buffers: "128MB"
       pg_stat_statements.max: "10000"
-      
-  # Bootstrap database settings
+
+# Bootstrap database settings
 initdb:
-    database: rideshare
-    owner: rideshare_user
-    secret:
-      name: postgres-credentials
+  database: rideshare
+  owner: rideshare_user
+  secret:
+    name: postgres-credentials
