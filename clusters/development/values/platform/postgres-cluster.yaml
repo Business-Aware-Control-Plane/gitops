@@ -3,6 +3,10 @@ cluster:
   name: postgres-db
   instances: 3
 
+  # Enable monitoring (automatic PodMonitor generation)
+  monitoring:
+    enabled: true
+
   # Storage configurations
   storage:
     size: 1Gi
