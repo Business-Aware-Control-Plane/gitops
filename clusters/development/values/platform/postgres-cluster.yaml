@@ -1,7 +1,7 @@
 # Configuration for the Postgres cluster
 cluster:
   name: postgres-db
-  instances: 3
+  instances: 1
 
   # Enable monitoring (automatic PodMonitor generation)
   monitoring:
