@@ -85,34 +85,47 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 
 ---
 
-### Step 3: Inject Secrets Manually
+### Step 3: Inject Secrets & Repository Credentials
 
-Secrets are kept out of Git for security. Run these commands to populate credentials:
+1. **ArgoCD Repository Access (for Private GitOps Repos)**:
+   ```bash
+   kubectl create secret generic repo-gitops \
+     --from-literal=url=https://github.com/Business-Aware-Control-Plane/gitops.git \
+     --from-literal=username=<YOUR_GITHUB_USERNAME> \
+     --from-literal=password=<YOUR_GITHUB_PAT> \
+     -n argocd
+   kubectl label secret repo-gitops -n argocd "argocd.argoproj.io/secret-type=repository"
+   ```
 
-```bash
-# RabbitMQ credentials (in platform namespace for StatefulSet)
-kubectl create secret generic rabbitmq-credentials \
-  --from-literal=username=guest \
-  --from-literal=password=guest \
-  --from-literal=uri=amqp://guest:guest@rabbitmq.platform.svc.cluster.local:5672/ \
-  -n platform
+2. **Application Secrets**:
+   ```bash
+   # RabbitMQ credentials (in platform namespace for StatefulSet)
+   kubectl create secret generic rabbitmq-credentials \
+     --from-literal=username=guest \
+     --from-literal=password=guest \
+     --from-literal=uri=amqp://guest:guest@rabbitmq.platform.svc.cluster.local:5672/ \
+     -n platform
 
-# RabbitMQ credentials (in rideshare namespace for microservice consumption)
-kubectl create secret generic rabbitmq-credentials \
-  --from-literal=uri=amqp://guest:guest@rabbitmq.platform.svc.cluster.local:5672/ \
-  -n rideshare
+   # RabbitMQ credentials (in rideshare namespace for microservice consumption)
+   kubectl create secret generic rabbitmq-credentials \
+     --from-literal=uri=amqp://guest:guest@rabbitmq.platform.svc.cluster.local:5672/ \
+     -n rideshare
 
-# Stripe Secrets
-kubectl create secret generic stripe-secrets \
-  --from-literal=stripe-secret-key="sk_test_..." \
-  --from-literal=stripe-webhook-key="whsec_..." \
-  -n rideshare
+   # Stripe Secrets
+   kubectl create secret generic stripe-secrets \
+     --from-literal=stripe-secret-key="sk_test_..." \
+     --from-literal=stripe-webhook-key="whsec_..." \
+     -n rideshare
+   ```
 
-# Postgres Connection Secret (for CNPG client)
-kubectl create secret generic postgres-cluster-app \
-  --from-literal=uri="postgresql://app:JSoGtyl5xQiUDvYNs6Mo67lUcmlq2J97f4XVqxHXKyrPYRObvYCqa2SEb5hstSlW@postgres-cluster-rw.platform.svc.cluster.local:5432/app?sslmode=disable" \
-  -n rideshare
-```
+3. **CloudNativePG PostgreSQL Secret Sync**:
+   Once CloudNativePG operator initializes `postgres-cluster` in the `platform` namespace, dynamically bind its generated connection string to the `rideshare` namespace:
+   ```bash
+   POSTGRES_URI=$(kubectl get secret postgres-cluster-app -n platform -o jsonpath='{.data.uri}' | base64 -d)
+   kubectl create secret generic postgres-cluster-app \
+     --from-literal=uri="${POSTGRES_URI}?sslmode=disable" \
+     -n rideshare --dry-run=client -o yaml | kubectl apply -f -
+   ```
 
 ---
 
@@ -129,6 +142,17 @@ kubectl create secret generic postgres-cluster-app \
    ```
 
 3. ArgoCD will discover the Root App (`dev-root`), scan the `applications/` folder recursively, and sync all child applications to your cluster automatically!
+
+---
+
+### Troubleshooting & Environment Notes
+
+- **Docker Desktop DNS Timeout (`github.com` resolution fail)**:
+  If `argocd-repo-server` fails with DNS `i/o timeout`, update the CoreDNS ConfigMap to forward upstream queries to public DNS (`1.1.1.1` / `8.8.8.8`):
+  ```bash
+  kubectl get cm coredns -n kube-system -o json | jq '.data.Corefile |= gsub("forward . /etc/resolv.conf"; "forward . 1.1.1.1 8.8.8.8 /etc/resolv.conf")' | kubectl apply -f -
+  kubectl rollout restart deployment coredns -n kube-system
+  ```
 
 ---
 
