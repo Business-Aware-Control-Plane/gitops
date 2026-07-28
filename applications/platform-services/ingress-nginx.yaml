@@ -18,6 +18,9 @@ spec:
             name: nginx
           service:
             type: ClusterIP
+          reportIngressStatus:
+            enable: true
+            externalService: nginx-ingress-controller
   destination:
     server: https://kubernetes.default.svc
     namespace: ingress-nginx
