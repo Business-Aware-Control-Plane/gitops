@@ -19,8 +19,8 @@ resources:
 
 config:
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
-  STRIPE_SUCCESS_URL: "http://web.rideshare:8080/?payment=success"
-  STRIPE_CANCEL_URL: "http://web.rideshare:8080/?payment=cancel"
+  STRIPE_SUCCESS_URL: "http://web.rideshare/?payment=success"
+  STRIPE_CANCEL_URL: "http://web.rideshare/?payment=cancel"
 
 env:
   - name: JAEGER_ENDPOINT
