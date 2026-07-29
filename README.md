@@ -63,7 +63,27 @@ Since development and production run in dedicated, separate Kubernetes clusters,
 
 ---
 
-## Bootstrap Guide (Development Cluster)
+## Quick Start (Automated Lifecycle Script)
+
+You can manage the entire local cluster lifecycle (creation, shutdown, ArgoCD setup, secret injection, image builds, and bootstrap) using the master `./cluster.sh` script in the root directory:
+
+```bash
+# Start/Create cluster, install ArgoCD, inject secrets, build & deploy all services
+./cluster.sh start
+
+# Check status of cluster, pods, and ArgoCD applications
+./cluster.sh status
+
+# Gracefully stop the cluster when not developing (frees up RAM & CPU)
+./cluster.sh stop
+
+# Restart cluster and re-sync all services
+./cluster.sh restart
+```
+
+---
+
+## Manual Bootstrap Guide (Development Cluster)
 
 ### Step 1: Create Cluster & Namespaces
 
