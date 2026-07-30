@@ -1,14 +1,11 @@
 replicaCount: 2
-
 image:
-  repository: europe-west1-docker.pkg.dev/{{PROJECT_ID}}/ride-sharing/web
-  tag: "1.0.0+f8b21e4"
+  repository: shakthirw/web
+  tag: "e54acc040431bb8abc23713f6fe05a21186090a5"
   pullPolicy: Always
-
 service:
   type: ClusterIP
   port: 3000
-
 resources:
   requests:
     cpu: 200m
@@ -16,7 +13,6 @@ resources:
   limits:
     cpu: 1000m
     memory: 1Gi
-
 env:
   - name: NODE_ENV
     value: "production"
@@ -24,7 +20,6 @@ env:
     value: "https://api.{{DOMAIN}}"
   - name: NEXT_PUBLIC_WEBSOCKET_URL
     value: "wss://api.{{DOMAIN}}/ws"
-
 livenessProbe:
   httpGet:
     path: /
@@ -33,7 +28,6 @@ livenessProbe:
   periodSeconds: 20
   timeoutSeconds: 10
   failureThreshold: 3
-
 readinessProbe:
   httpGet:
     path: /

@@ -1,14 +1,11 @@
 replicaCount: 1
-
 image:
-  repository: ride-sharing/driver-service
-  tag: latest
+  repository: shakthirw/driver-service
+  tag: e54acc040431bb8abc23713f6fe05a21186090a5
   pullPolicy: IfNotPresent
-
 service:
   type: ClusterIP
   port: 9092
-
 resources:
   requests:
     cpu: 100m
@@ -16,11 +13,9 @@ resources:
   limits:
     cpu: 200m
     memory: 128Mi
-
 config:
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
   REDIS_ADDR: "redis.platform.svc.cluster.local:6379"
-
 env:
   - name: RABBITMQ_URI
     valueFrom:

@@ -1,14 +1,11 @@
 replicaCount: 1
-
 image:
-  repository: ride-sharing/payment-service
-  tag: latest
+  repository: shakthirw/payment-service
+  tag: e54acc040431bb8abc23713f6fe05a21186090a5
   pullPolicy: IfNotPresent
-
 service:
   type: ClusterIP
   port: 9004
-
 resources:
   requests:
     cpu: 100m
@@ -16,12 +13,10 @@ resources:
   limits:
     cpu: 200m
     memory: 128Mi
-
 config:
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
   STRIPE_SUCCESS_URL: "http://web.rideshare/?payment=success"
   STRIPE_CANCEL_URL: "http://web.rideshare/?payment=cancel"
-
 env:
   - name: JAEGER_ENDPOINT
     valueFrom:

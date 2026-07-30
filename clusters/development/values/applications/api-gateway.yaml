@@ -1,14 +1,11 @@
 replicaCount: 1
-
 image:
-  repository: ride-sharing/api-gateway
-  tag: latest
+  repository: shakthirw/api-gateway
+  tag: e54acc040431bb8abc23713f6fe05a21186090a5
   pullPolicy: IfNotPresent
-
 service:
   type: LoadBalancer
   port: 8081
-
 resources:
   requests:
     cpu: 125m
@@ -16,11 +13,9 @@ resources:
   limits:
     cpu: 125m
     memory: 128Mi
-
 config:
   GATEWAY_HTTP_ADDR: ":8081"
   JAEGER_ENDPOINT: "http://jaeger.observability.svc.cluster.local:4318/v1/traces"
-
 env:
   - name: GATEWAY_HTTP_ADDR
     valueFrom:
@@ -42,7 +37,6 @@ env:
       secretKeyRef:
         name: stripe-secrets
         key: stripe-webhook-key
-
 ingress:
   className: nginx
   annotations:
