@@ -20,6 +20,8 @@ env:
     value: "http://api-gateway.rideshare:8080"
   - name: NEXT_PUBLIC_WEBSOCKET_URL
     value: "ws://api-gateway.rideshare:8080/ws"
+  - name: NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY
+    value: "pk_test_51TsQEZPhlSJG365Uy2n6nNnNffe3Ti90wYT1T19rJPQXEYvoJPqprYpIBV3wUXZpamcGq2BaiYpJ20kw2NfJGfve007bNk8RCx"
 livenessProbe:
   httpGet:
     path: /
