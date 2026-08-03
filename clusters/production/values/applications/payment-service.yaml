@@ -1,7 +1,7 @@
 replicaCount: 2
 image:
   repository: shakthirw/payment-service
-  tag: "e54acc040431bb8abc23713f6fe05a21186090a5"
+  tag: "21e846726bf538d5cafde11115385a631b5775d7"
   pullPolicy: Always
 service:
   type: ClusterIP
