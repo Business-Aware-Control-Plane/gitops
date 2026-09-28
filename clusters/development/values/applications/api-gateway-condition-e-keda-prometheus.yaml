@@ -18,10 +18,10 @@
 resources:
   requests:
     cpu: 100m
-    memory: 128Mi
+    memory: 64Mi
   limits:
     cpu: 500m
-    memory: 256Mi
+    memory: 128Mi
 
 keda:
   enabled: true
