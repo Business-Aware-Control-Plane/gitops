@@ -57,6 +57,12 @@ spec:
             ruleSelectorNilUsesHelmValues: false
             storageSpec:
               disableMountSubPath: true
+              volumeClaimTemplate:
+                spec:
+                  accessModes: ["ReadWriteOnce"]
+                  resources:
+                    requests:
+                      storage: 10Gi
 
         grafana:
           enabled: true
