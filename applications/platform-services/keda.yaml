@@ -10,11 +10,9 @@ spec:
   source:
     repoURL: 'https://kedacore.github.io/charts'
     chart: keda
-    # TODO(INFRA-HB-01 §06 step 5): pin to the actual latest stable release —
-    # `helm search repo kedacore/keda --versions` or the KEDA GitHub releases
-    # page — before first sync. Bash was down when this file was written, so
-    # this could not be verified against the live chart index.
-    targetRevision: 2.16.0
+    # Verified against the live chart index 2026-09-28 (helm search repo
+    # kedacore/keda --versions) — 2.21.0 was the latest stable release.
+    targetRevision: 2.21.0
     helm:
       values: |
         resources:

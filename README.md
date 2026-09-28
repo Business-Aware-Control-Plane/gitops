@@ -174,6 +174,12 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
   kubectl rollout restart deployment coredns -n kube-system
   ```
 
+- **ArgoCD Applications stuck `Progressing`/`Degraded` forever on any Ingress-owning app** (found 2026-09-28 investigating a stuck `prometheus-stack` sync): ArgoCD's default Lua health check for `networking.k8s.io/Ingress` waits for `status.loadBalancer.ingress` to be populated — a real cloud load balancer would set this, but k3d's `nginx-ingress` never does, so the health check waits forever and blocks the whole sync (this was silently affecting `api-gateway`, `jaeger`, and `web` too — all three flipped from stuck `Progressing` to `Healthy` immediately once this was applied). Not tracked by this repo since ArgoCD's own config isn't GitOps-managed here — re-apply after any cluster rebuild:
+  ```bash
+  kubectl patch configmap argocd-cm -n argocd --type=merge -p '{"data":{"resource.customizations.health.networking.k8s.io_Ingress":"hs = {}\nhs.status = \"Healthy\"\nhs.message = \"Ingress assumed healthy -- this k3d cluster has no cloud load balancer to populate status.loadBalancer.ingress, which ArgoCD default health check waits on forever otherwise\"\nreturn hs\n"}}'
+  ```
+  If an Application is already stuck `Running` from before this was applied, clear its stuck operation once to let it pick up the new health check (`argocd app terminate-op <name>` via the ArgoCD CLI, or without it: `kubectl patch application <name> -n argocd --type=merge -p '{"status":{"operationState":null}}'` followed by `kubectl annotate application <name> -n argocd argocd.argoproj.io/refresh=hard --overwrite`).
+
 ---
 
 ## Autoscaling experiments (INFRA-HB-01)
