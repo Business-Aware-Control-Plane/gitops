@@ -1,0 +1,23 @@
+# INFRA-HB-01 Condition B — HPA on CPU utilization (metrics-server).
+# Add this file as a second entry in api-gateway's Application
+# spec.source.helm.valueFiles (after the base api-gateway.yaml), sync, then
+# run the k6 load test + watch-replicas.sh against it. Remove it (and sync
+# again) before switching to another condition — conditions are meant to be
+# run one at a time, not layered.
+#
+# Widens limits above requests (INFRA-HB-01 §03) so CPU utilization can
+# climb through a real range instead of hitting Guaranteed-QoS throttling
+# almost immediately.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60

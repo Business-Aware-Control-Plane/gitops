@@ -1,0 +1,20 @@
+{{- if .Values.keda }}
+{{- if .Values.keda.enabled }}
+{{- if .Values.keda.triggerAuth }}
+apiVersion: keda.sh/v1alpha1
+kind: TriggerAuthentication
+metadata:
+  name: {{ include "app.fullname" . }}-trigger-auth
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  secretTargetRef:
+    {{- range .Values.keda.triggerAuth.secretTargetRef }}
+    - parameter: {{ .parameter }}
+      name: {{ .name }}
+      key: {{ .key }}
+    {{- end }}
+{{- end }}
+{{- end }}
+{{- end }}

@@ -176,6 +176,19 @@ kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/st
 
 ---
 
+## Autoscaling experiments (INFRA-HB-01)
+
+`charts/rideshare-service` ships an HPA template (`templates/hpa.yaml`) and a KEDA `ScaledObject`/`TriggerAuthentication` pair (`templates/scaledobject.yaml`, `templates/triggerauthentication.yaml`), both inert unless a service's values opt in (`autoscaling.enabled` / `keda.enabled` — the two are mutually exclusive; the chart fails the Helm render if both are set on one service). KEDA itself is installed as its own ArgoCD Application, `applications/platform-services/keda.yaml`.
+
+Five comparable conditions (Test Plan Layer 3) live as small overlay files under `clusters/development/values/applications/api-gateway-condition-*.yaml` — static replicas (no overlay, today's actual config), HPA-CPU, HPA-CPU+memory, KEDA-RabbitMQ (`notify_driver_assign` queue depth), and KEDA-Prometheus (nginx-ingress request rate, needs Prometheus's storage fix live first). To run one:
+
+1. Add the condition's overlay file as a second entry in `applications/services/api-gateway.yaml`'s `spec.source.helm.valueFiles` (after the base `api-gateway.yaml`).
+2. Commit, push, let ArgoCD sync.
+3. In `../loadtest/`: run `./watch-replicas.sh api-gateway rideshare <condition-label>` in one terminal, `k6 run --env BASE_URL=<api-gateway URL> ramp-to-spike.js` in another.
+4. Remove the overlay entry and re-sync before switching to the next condition — conditions are run one at a time, not layered.
+
+Full rationale, the exact metrics each condition is meant to produce, and the build sequence: see the INFRA-HB-01 blueprint.
+
 ## GitOps Developer Workflow (CI/CD Tag Bumps)
 
 To deploy new versions of a microservice:

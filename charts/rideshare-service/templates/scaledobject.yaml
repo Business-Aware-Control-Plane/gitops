@@ -1,0 +1,23 @@
+{{- if .Values.keda }}
+{{- if .Values.keda.enabled }}
+{{- if and .Values.autoscaling .Values.autoscaling.enabled }}
+{{- fail "autoscaling.enabled and keda.enabled are mutually exclusive on one service (INFRA-HB-01 §02) — pick one per experiment condition." }}
+{{- end }}
+apiVersion: keda.sh/v1alpha1
+kind: ScaledObject
+metadata:
+  name: {{ include "app.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "app.labels" . | nindent 4 }}
+spec:
+  scaleTargetRef:
+    name: {{ include "app.fullname" . }}
+  minReplicaCount: {{ .Values.keda.minReplicaCount | default 1 }}
+  maxReplicaCount: {{ .Values.keda.maxReplicaCount | default 5 }}
+  pollingInterval: {{ .Values.keda.pollingInterval | default 15 }}
+  cooldownPeriod: {{ .Values.keda.cooldownPeriod | default 60 }}
+  triggers:
+    {{- toYaml .Values.keda.triggers | nindent 4 }}
+{{- end }}
+{{- end }}

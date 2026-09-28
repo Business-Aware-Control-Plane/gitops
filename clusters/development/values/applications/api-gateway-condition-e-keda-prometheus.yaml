@@ -1,0 +1,37 @@
+# INFRA-HB-01 Condition E — KEDA scaling on a Prometheus query (request rate).
+# Same usage as condition B. Requires §01's Prometheus storage fix to be live
+# first (KEDA queries prometheus-stack-kube-prometheus-prometheus:9090
+# directly, no Prometheus Adapter involved).
+#
+# api-gateway doesn't emit its own custom Prometheus metrics today (checked
+# services/api-gateway for a promhttp handler — there isn't one), so this
+# condition scales on nginx-ingress-controller's own request-rate metric for
+# api-gateway's ingress host instead, rather than adding new instrumentation
+# just for this experiment. TODO: once Prometheus is actually running, run
+# `curl http://nginx-ingress-controller.ingress-nginx:10254/metrics | grep request`
+# to confirm the exact metric name and label set this nginx-ingress version
+# exports, and correct the query below if it differs — it was written from
+# nginx-ingress-controller's documented convention
+# (`nginx_ingress_controller_requests` counter, labelled by `ingress`), not
+# verified against this live instance, since Prometheus was still down when
+# this file was written.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+keda:
+  enabled: true
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  pollingInterval: 15
+  cooldownPeriod: 60
+  triggers:
+    - type: prometheus
+      metadata:
+        serverAddress: http://prometheus-stack-kube-prom-prometheus.observability.svc.cluster.local:9090
+        query: sum(rate(nginx_ingress_controller_requests{ingress="api-gateway"}[1m]))
+        threshold: "20"

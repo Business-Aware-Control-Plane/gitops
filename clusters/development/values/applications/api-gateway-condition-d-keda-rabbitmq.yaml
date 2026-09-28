@@ -1,0 +1,37 @@
+# INFRA-HB-01 Condition D — KEDA scaling on RabbitMQ queue depth.
+# Same usage as condition B — add as a second valueFiles entry on
+# api-gateway's Application, sync, run the load test, then remove before
+# switching conditions. Mutually exclusive with autoscaling.enabled (the
+# hpa.yaml/scaledobject.yaml templates fail the Helm render if both are set).
+#
+# notify_driver_assign is a real, fixed-name queue api-gateway already
+# consumes from (services/api-gateway/ws.go, shared/messaging/events.go) —
+# rising queue depth here means driver-matching notifications are backing up
+# behind however many WebSocket consumers are currently running.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+keda:
+  enabled: true
+  minReplicaCount: 1
+  maxReplicaCount: 5
+  pollingInterval: 15
+  cooldownPeriod: 60
+  triggerAuth:
+    secretTargetRef:
+      - parameter: host
+        name: rabbitmq-credentials
+        key: uri
+  triggers:
+    - type: rabbitmq
+      metadata:
+        queueName: notify_driver_assign
+        mode: QueueLength
+        value: "20"
+      authenticationRef:
+        name: api-gateway-trigger-auth

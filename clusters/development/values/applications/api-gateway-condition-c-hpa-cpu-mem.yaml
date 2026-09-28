@@ -1,0 +1,17 @@
+# INFRA-HB-01 Condition C — HPA on CPU + memory utilization combined.
+# Same usage as condition B's overlay file — add as a second valueFiles
+# entry, sync, run the load test, then remove before the next condition.
+resources:
+  requests:
+    cpu: 100m
+    memory: 128Mi
+  limits:
+    cpu: 500m
+    memory: 256Mi
+
+autoscaling:
+  enabled: true
+  minReplicas: 1
+  maxReplicas: 5
+  targetCPUUtilizationPercentage: 60
+  targetMemoryUtilizationPercentage: 70
